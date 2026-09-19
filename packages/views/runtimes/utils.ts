@@ -281,6 +281,14 @@ const MODEL_PRICING: Record<
   // -- Zhipu z.ai (docs.z.ai/guides/overview/pricing). Free flash tiers
   //    are priced at 0 so they resolve cleanly instead of falling through
   //    to the "unmapped" diagnostic. --
+  // glm-5.2 and glm-5.3-flash ship first in the relay price sheets (RMB:
+  // ¥8/¥28 and ¥0.8/¥2.8 per M tokens) before the international USD sheet
+  // lists them; rates below convert those at 6.7 CNY/USD (2026-09-19).
+  // Bare keys on purpose: these ids arrive with foreign provider tags
+  // (e.g. provider "claude" through an Anthropic-compatible relay), and
+  // bare candidates resolve for any provider.
+  "glm-5.2":            { input: 1.19, output: 4.18, cacheRead: 0.24,   cacheWrite: 1.19 },
+  "glm-5.3-flash":      { input: 0.12, output: 0.42, cacheRead: 0.024,  cacheWrite: 0.12 },
   "glm-5.1":            { input: 1.4,  output: 4.4,  cacheRead: 0.26,   cacheWrite: 1.4 },
   "glm-5":              { input: 1.0,  output: 3.2,  cacheRead: 0.2,    cacheWrite: 1.0 },
   "glm-5-turbo":        { input: 1.2,  output: 4.0,  cacheRead: 0.24,   cacheWrite: 1.2 },

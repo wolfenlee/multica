@@ -97,6 +97,14 @@ var modelPrices = map[string]ModelPrice{
 	// providers/moonshotai/models/kimi-k3.toml). Moonshot bills no separate
 	// cache write, so CacheWritePerM mirrors Input.
 	"moonshotai:kimi-k3": {Provider: "moonshotai", Model: "kimi-k3", InputPerM: 3.0, CacheReadPerM: 0.30, CacheWritePerM: 3.0, OutputPerM: 15.0},
+	// Zhipu GLM. glm-5.2 and glm-5.3-flash ship first in the relay price
+	// sheets (RMB: ¥8/¥28 and ¥0.8/¥2.8 per M tokens) before the
+	// international USD sheet lists them; rates below convert those at
+	// 6.7 CNY/USD (2026-09-19). Zhipu bills no separate cache write, so
+	// CacheWritePerM mirrors Input; CacheReadPerM is the ~0.2x-input cached
+	// rate the other GLM rows use. Mirror packages/views/runtimes/utils.ts.
+	"zhipu:glm-5.2":       {Provider: "zhipu", Model: "glm-5.2", InputPerM: 1.19, CacheReadPerM: 0.24, CacheWritePerM: 1.19, OutputPerM: 4.18},
+	"zhipu:glm-5.3-flash": {Provider: "zhipu", Model: "glm-5.3-flash", InputPerM: 0.12, CacheReadPerM: 0.024, CacheWritePerM: 0.12, OutputPerM: 0.42},
 	// Volcengine Ark (ark.cn-beijing.volces.com). `ark-code-latest` is a
 	// rolling alias whose target can be switched in the Volcengine console
 	// (across model families), so it is not a stable model identity; the
@@ -201,6 +209,12 @@ var modelAliasRules = []struct {
 	// unmapped; `kimi-code/k3` (Kimi Code CLI) resolves via the `/k3$` form.
 	{regexp.MustCompile(`(^|/|:)kimi-k3$`), "moonshotai:kimi-k3"},
 	{regexp.MustCompile(`(^|/|:)k3$`), "moonshotai:kimi-k3"},
+	// Zhipu GLM. Anchored dotted-only exact match — same rule as the gpt-5.6
+	// rows: the frontend resolver does not dash-normalize non-Anthropic ids,
+	// so a dashed variant must stay unmapped on both sides rather than
+	// silently borrowing a tier here.
+	{regexp.MustCompile(`(^|/|:)glm-5\.2$`), "zhipu:glm-5.2"},
+	{regexp.MustCompile(`(^|/|:)glm-5\.3-flash$`), "zhipu:glm-5.3-flash"},
 	// Volcengine Ark `ark-code-latest` is deliberately absent: it is a
 	// console-switchable rolling alias across model families, not a stable
 	// model identity, so it stays unmapped.

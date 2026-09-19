@@ -496,3 +496,53 @@ func TestPriceForModelAliasAnthropicFable51(t *testing.T) {
 		}
 	}
 }
+
+func TestPriceForModelAliasZhipuGLM(t *testing.T) {
+	cases := []struct {
+		model string
+		want  ModelPrice
+	}{
+		// Runtimes reaching GLM through an Anthropic-compatible relay report
+		// the model bare, with no provider prefix at all.
+		{
+			model: "glm-5.2",
+			want:  ModelPrice{Provider: "zhipu", Model: "glm-5.2", InputPerM: 1.19, CacheReadPerM: 0.24, CacheWritePerM: 1.19, OutputPerM: 4.18},
+		},
+		{
+			model: "glm-5.3-flash",
+			want:  ModelPrice{Provider: "zhipu", Model: "glm-5.3-flash", InputPerM: 0.12, CacheReadPerM: 0.024, CacheWritePerM: 0.12, OutputPerM: 0.42},
+		},
+		{
+			model: "custom:glm-5.2",
+			want:  ModelPrice{Provider: "zhipu", Model: "glm-5.2", InputPerM: 1.19, CacheReadPerM: 0.24, CacheWritePerM: 1.19, OutputPerM: 4.18},
+		},
+		{
+			model: "zai/glm-5.3-flash",
+			want:  ModelPrice{Provider: "zhipu", Model: "glm-5.3-flash", InputPerM: 0.12, CacheReadPerM: 0.024, CacheWritePerM: 0.12, OutputPerM: 0.42},
+		},
+	}
+
+	for _, tc := range cases {
+		got, ok := PriceForModelAlias(tc.model)
+		if !ok {
+			t.Fatalf("PriceForModelAlias(%q) did not resolve", tc.model)
+		}
+		if got != tc.want {
+			t.Fatalf("PriceForModelAlias(%q) = %+v, want %+v", tc.model, got, tc.want)
+		}
+	}
+
+	// Anchored rules: near-named variants must stay unmapped rather than
+	// borrow a tier — a dashed id (the frontend does not dash-normalize
+	// non-Anthropic ids) and unknown suffixed variants alike.
+	for _, model := range []string{
+		"glm-5-2",
+		"glm-5.2-extra",
+		"glm-5.3-flash-preview",
+		"glm-5.3-flash[]",
+	} {
+		if _, ok := PriceForModelAlias(model); ok {
+			t.Fatalf("PriceForModelAlias(%q) unexpectedly resolved", model)
+		}
+	}
+}

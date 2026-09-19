@@ -588,6 +588,37 @@ describe("estimateCost", () => {
     ).toBeCloseTo(1.4 + 4.4, 5);
   });
 
+  it("prices glm-5.2 / glm-5.3-flash from the relay RMB sheet at 6.7 CNY/USD, bare or provider-qualified", () => {
+    // These SKUs arrive through Anthropic-compatible relays with a foreign
+    // provider tag (this deployment reports provider "claude"), so the bare
+    // key must resolve for any provider. 1M in × $1.19 + 1M out × $4.18 +
+    // 1M cache-read × $0.24.
+    expect(
+      estimateCost({
+        ...zeroUsage,
+        provider: "claude",
+        model: "glm-5.2",
+        input_tokens: 1_000_000,
+        output_tokens: 1_000_000,
+        cache_read_tokens: 1_000_000,
+      }),
+    ).toBeCloseTo(1.19 + 4.18 + 0.24, 5);
+    expect(
+      estimateCost({
+        ...zeroUsage,
+        provider: "claude",
+        model: "glm-5.3-flash",
+        input_tokens: 1_000_000,
+        output_tokens: 1_000_000,
+        cache_read_tokens: 1_000_000,
+      }),
+    ).toBeCloseTo(0.12 + 0.42 + 0.024, 5);
+    // Near-named variants are distinct SKUs and stay unmapped ($0), matching
+    // the backend's anchored rules.
+    expect(isModelPriced("glm-5.2-extra")).toBe(false);
+    expect(isModelPriced("glm-5-2")).toBe(false);
+  });
+
   it("prices glm-4.5-flash at the official Free tier ($0)", () => {
     // z.ai currently ships Free tiers for the *-flash family; $0 is the
     // literal price on the page, not a placeholder. Anything non-zero
