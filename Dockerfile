@@ -3,6 +3,12 @@ FROM golang:1.26-alpine AS builder
 
 RUN apk add --no-cache git
 
+# Optional Go module proxy for networks where proxy.golang.org is unreachable
+# (e.g. CN). Empty by default, so the default build behavior is unchanged;
+# pass --build-arg GOPROXY=https://goproxy.cn,direct when needed.
+ARG GOPROXY=""
+ENV GOPROXY=${GOPROXY}
+
 WORKDIR /src
 
 # Cache dependencies

@@ -11,6 +11,10 @@ services:
         VERSION: ${VERSION:-dev}
         COMMIT: ${COMMIT:-unknown}
         DATE: ${DATE:-unknown}
+        # Set GOPROXY in the environment to route Go module downloads through
+        # a mirror (e.g. https://goproxy.cn,direct where proxy.golang.org is
+        # unreachable). Empty by default.
+        GOPROXY: ${GOPROXY:-}
 
   frontend:
     image: multica-web:dev
