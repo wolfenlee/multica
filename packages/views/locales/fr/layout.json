@@ -8,6 +8,7 @@
     "autopilots": "Automatisation",
     "agents": "Agents",
     "squads": "Squads",
+    "visualization": "Tableau de planification",
     "usage": "Statistiques",
     "runtimes": "Runtimes",
     "skills": "Skills",
@@ -61,5 +62,8 @@
       "title": "Rejoignez notre Discord",
       "dismiss": "Ignorer"
     }
+  },
+  "visualization": {
+    "wip_notice": "En cours de développement"
   }
 }

@@ -8,6 +8,7 @@
     "autopilots": "Autopilot",
     "agents": "Agents",
     "squads": "Squads",
+    "visualization": "Scheduling Board",
     "usage": "Analytics",
     "runtimes": "Runtimes",
     "skills": "Skills",
@@ -61,5 +62,8 @@
       "title": "Join our Discord",
       "dismiss": "Dismiss"
     }
+  },
+  "visualization": {
+    "wip_notice": "Under development"
   }
 }

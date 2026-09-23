@@ -96,6 +96,8 @@ export function parseTabSubject(url: string): TabSubject {
       return id
         ? { kind: "actor", actorType: "squad", id }
         : { kind: "page", page: "squads" };
+    case "visualization":
+      return { kind: "page", page: "visualization" };
     case "usage":
       return { kind: "page", page: "usage" };
     case "inbox":

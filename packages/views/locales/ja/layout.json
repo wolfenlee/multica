@@ -8,6 +8,7 @@
     "autopilots": "オートパイロット",
     "agents": "エージェント",
     "squads": "スクワッド",
+    "visualization": "スケジューリングボード",
     "usage": "分析",
     "runtimes": "ランタイム",
     "skills": "スキル",
@@ -61,5 +62,8 @@
       "title": "Discord に参加",
       "dismiss": "閉じる"
     }
+  },
+  "visualization": {
+    "wip_notice": "開発中"
   }
 }

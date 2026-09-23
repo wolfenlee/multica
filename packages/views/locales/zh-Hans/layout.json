@@ -8,6 +8,7 @@
     "autopilots": "自动化",
     "agents": "智能体",
     "squads": "小队",
+    "visualization": "调度画板",
     "usage": "统计",
     "runtimes": "运行时",
     "skills": "Skills",
@@ -61,5 +62,8 @@
       "title": "加入 Discord",
       "dismiss": "关闭"
     }
+  },
+  "visualization": {
+    "wip_notice": "开发中"
   }
 }

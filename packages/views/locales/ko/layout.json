@@ -8,6 +8,7 @@
     "autopilots": "오토파일럿",
     "agents": "에이전트",
     "squads": "스쿼드",
+    "visualization": "스케줄링 보드",
     "usage": "분석",
     "runtimes": "런타임",
     "skills": "스킬",
@@ -61,5 +62,8 @@
       "title": "Discord 참여하기",
       "dismiss": "닫기"
     }
+  },
+  "visualization": {
+    "wip_notice": "개발 중"
   }
 }
