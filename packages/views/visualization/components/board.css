@@ -1,0 +1,43 @@
+/* Visualization board-specific styles. Tokens come from packages/ui — nothing
+   here introduces a color; derivations use color-mix over semantic tokens. */
+
+/* Realtime event pulse: a brand glow that flashes once over the hit node and
+   fades out (design contract: 600ms). The page clears the flash set to unmount
+   the ring, so the animation only needs to run forward once. */
+@keyframes board-flash-ring {
+  0% {
+    opacity: 0.9;
+    box-shadow: 0 0 0 0 color-mix(in oklch, var(--brand) 45%, transparent);
+  }
+  100% {
+    opacity: 0;
+    box-shadow: 0 0 0 9px transparent;
+  }
+}
+
+.board-flash {
+  animation: board-flash-ring 600ms ease-out forwards;
+}
+
+/* Compact visual controls need a ≥44px interaction area (01-style §3); the
+   ::after overlay extends the hit box without changing the visual footprint. */
+.hit-44 {
+  position: relative;
+}
+
+.hit-44::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+}
+
+/* React Flow chrome tuned to the board: transparent canvas over the page
+   background, controls collapsed to the custom right-edge cluster. */
+.react-flow__attribution {
+  background: transparent;
+  opacity: 0.6;
+}
+
+.react-flow__handle {
+  pointer-events: none;
+}
