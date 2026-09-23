@@ -38,7 +38,7 @@ import "./components/board.css";
  * Scheduling board page (React Flow). Owns all board state — fold, squad
  * expansion, filters, search, selection, zoom tier, flash — and feeds the
  * layout + display components. Data comes exclusively from the
- * `components/data-source.ts` seam (fixture today, data-layer hooks later).
+ * `components/data-source.ts` seam (live: the data layer's hooks).
  */
 
 
@@ -74,11 +74,20 @@ function MiniMapDot({ x, y, width, height, color }: { x: number; y: number; widt
 
 function BoardCanvas() {
   const paths = useWorkspacePaths();
-  const { graph, realtime, source } = useBoardDataSource();
+  const { graph, realtime, source, isLoading, isError } = useBoardDataSource();
   const reactFlow = useReactFlow<BoardFlowNode>();
 
   // --- view state -----------------------------------------------------------
-  const [collapsedIssues, setCollapsedIssues] = useState<ReadonlySet<string>>(() => defaultCollapsedIssues(graph));
+  const [collapsedIssues, setCollapsedIssues] = useState<ReadonlySet<string>>(new Set());
+  // Live data arrives async, so collapse defaults cannot be a useState
+  // initializer (it would freeze on the empty first render). Apply them once,
+  // at first hydration; realtime refreshes afterwards never reset user folds.
+  const hydratedRef = useRef(false);
+  useEffect(() => {
+    if (hydratedRef.current || graph.issueNodes.length === 0) return;
+    hydratedRef.current = true;
+    setCollapsedIssues(defaultCollapsedIssues(graph));
+  }, [graph]);
   const [expandedSquads, setExpandedSquads] = useState<ReadonlySet<string>>(new Set());
   const [statusFilter, setStatusFilter] = useState<ReadonlySet<string>>(new Set());
   const [assigneeFilter, setAssigneeFilter] = useState<ReadonlySet<BoardActorType>>(new Set());
@@ -298,6 +307,22 @@ function BoardCanvas() {
     },
     [reactFlow, selectNodeById],
   );
+
+  // Live-data gates (fixture era rendered synchronously, so these are new).
+  if (isError) {
+    return (
+      <div className="flex min-h-0 flex-1 items-center justify-center p-8">
+        <p className="text-body text-destructive">{S.loadError}</p>
+      </div>
+    );
+  }
+  if (isLoading && graph.issueNodes.length === 0) {
+    return (
+      <div className="flex min-h-0 flex-1 items-center justify-center p-8" aria-busy="true">
+        <p className="text-body text-muted-foreground animate-pulse">{S.loading}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">

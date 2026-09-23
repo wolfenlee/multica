@@ -64,4 +64,6 @@ export const BOARD_STRINGS = {
   narrowViewport: "Please open in a wider window",
   unknownStatus: "Unknown",
   runtimeStatusFallback: "idle",
+  loading: "Loading board…",
+  loadError: "Failed to load board data",
 } as const;
